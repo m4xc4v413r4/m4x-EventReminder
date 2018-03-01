@@ -2,11 +2,6 @@ ignore:
 	- README.md
 	- CHANGELOG.md
 
-Contents:
-  type: markdown
-  input-file: README.md
-  output-page: "Main"
-
 manual-changelog:
 	filename: CHANGELOG.md
 	markup-type: markdown
