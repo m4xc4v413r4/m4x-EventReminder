@@ -31,7 +31,6 @@ local function AnimateFrame(type)
 		warnframe.ag:SetScript("OnFinished",function(self)
 			warnframe:SetPoint("LEFT", 0, 10)
 			warnframe:SetAlpha(0)
-			warnframe:Hide()
 		end)
 	end
 	warnframe.ag:Play()
@@ -133,7 +132,7 @@ local function CheckBonusEvents()
 end
 
 local function MakeOpt(type, name, text, pos1, pos2, pos3, pos4, pos5, extra)
-if type == "btn" then
+	if type == "btn" then
 		local optbtn = CreateFrame("CheckButton", "m4xEROptBtn" .. name, m4xEventReminderSettings.OptMenu, "InterfaceOptionsCheckButtonTemplate")
 		optbtn:SetPoint(pos1, pos2, pos3, pos4, pos5)
 		_G[optbtn:GetName() .. "Text"]:SetText(text)
@@ -144,12 +143,28 @@ if type == "btn" then
 		if not m4xEventReminderDB["FirstConfig"] then
 			m4xEventReminderDB["OptBtn-" .. name .. "-" .. text] = true
 		end
+		if name == "Reward1" then
+			if m4xEventReminderDB["OptBtn-Warn1-Enabled"] then
+				m4xEROptBtnReward1Text:SetTextColor(1, 1, 1)
+			else
+				m4xEROptBtnReward1Text:SetTextColor(0.5, 0.5, 0.5)
+			end
+			m4xEROptBtnReward1:SetEnabled(m4xEventReminderDB["OptBtn-Warn1-Enabled"])
+		end
 		optbtn:SetChecked(m4xEventReminderDB["OptBtn-" .. name .. "-" .. text])
 		optbtn:SetScript("OnClick", function()
 			if optbtn:GetChecked() then
 				m4xEventReminderDB["OptBtn-" .. name .. "-" .. text] = true
 			else
 				m4xEventReminderDB["OptBtn-" .. name .. "-" .. text] = false
+			end
+			if name == "Warn1" then
+				if m4xEventReminderDB["OptBtn-Warn1-Enabled"] then
+					m4xEROptBtnReward1Text:SetTextColor(1, 1, 1)
+				else
+					m4xEROptBtnReward1Text:SetTextColor(0.5, 0.5, 0.5)
+				end
+				m4xEROptBtnReward1:SetEnabled(m4xEventReminderDB["OptBtn-Warn1-Enabled"])
 			end
 			optbtn:SetChecked(m4xEventReminderDB["OptBtn-" .. name .. "-" .. text])
 		end)
@@ -181,18 +196,36 @@ local function InitSettings()
 	local warnsubtitle = MakeOpt("title", "SubWarn", "Warn on chosen Events.", "TOPLEFT", "m4xEROptTitleWarn", "BOTTOMLEFT", 0, -5, "HighlightSmall")
 	local warn1 = MakeOpt("btn", "Warn1", "Enabled", "TOPLEFT", "m4xEROptTitleSubWarn", "BOTTOMLEFT", 0, -10)
 
-	local questtitle = MakeOpt("title", "Quest", "Bonus Event Quest", "TOPLEFT", "m4xEROptBtnWarn1", "BOTTOMLEFT", 0, -15, "Normal")
-	local questsubtitle = MakeOpt("title", "SubQuest", "Auto-Accept quest on chosen Events. If the Warning is Enabled, you will still be warned before accepting the quest.", "TOPLEFT", "m4xEROptTitleQuest", "BOTTOMLEFT", 0, -5, "HighlightSmall")
-	local quest1 = MakeOpt("btn", "Quest1", "Auto-Accept", "TOPLEFT", "m4xEROptTitleSubQuest", "BOTTOMLEFT", 0, -10)
-
-	local rewardtitle = MakeOpt("title", "Reward", "Bonus Event Reward", "TOPLEFT", "m4xEROptBtnQuest1", "BOTTOMLEFT", 0, -15, "Normal")
+	local rewardtitle = MakeOpt("title", "Reward", "Bonus Event Reward", "TOPLEFT", "m4xEROptBtnWarn1", "BOTTOMLEFT", 0, -15, "Normal")
 	local rewardsubtitle = MakeOpt("title", "SubReward", "Show the Event reward on the Event Warning.", "TOPLEFT", "m4xEROptTitleReward", "BOTTOMLEFT", 0, -5, "HighlightSmall")
 	local reward1 = MakeOpt("btn", "Reward1", "Enabled", "TOPLEFT", "m4xEROptTitleSubReward", "BOTTOMLEFT", 0, -10)
+
+	local questtitle = MakeOpt("title", "Quest", "Bonus Event Quest", "TOPLEFT", "m4xEROptBtnReward1", "BOTTOMLEFT", 0, -15, "Normal")
+	local questsubtitle = MakeOpt("title", "SubQuest", "Auto-Accept quest on chosen Events. If the Warning is Enabled, you will still be warned before accepting the quest.", "TOPLEFT", "m4xEROptTitleQuest", "BOTTOMLEFT", 0, -5, "HighlightSmall")
+	local quest1 = MakeOpt("btn", "Quest1", "Auto-Accept", "TOPLEFT", "m4xEROptTitleSubQuest", "BOTTOMLEFT", 0, -10)
 
 	if UnitLevel("player") == GetMaxPlayerLevel() then
 		C_Timer.After(20, CheckBonusEvents)
 	end
 end
+
+SlashCmdList["M4XEVENTREMINDER"] = function(msg)
+	if msg == "config" then
+		InterfaceOptionsFrame_Show()
+		InterfaceOptionsFrame_OpenToCategory("m4x Event Reminder")
+	else
+		if warnframe then
+			if warnframe:GetAlpha() == 1 then
+				AnimateFrame("out")
+			elseif warnframe:GetAlpha() == 0 then
+				AnimateFrame("in")
+			end
+		else
+			CheckBonusEvents()
+		end
+	end
+end
+SLASH_M4XEVENTREMINDER1 = "/mer"
 
 f:SetScript("OnEvent", function(self, event)
 	if event == "PLAYER_ENTERING_WORLD" then

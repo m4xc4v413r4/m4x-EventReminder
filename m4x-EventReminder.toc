@@ -2,7 +2,7 @@
 ## Title: m4x Event Reminder
 ## Notes: Reminds you of weekly event quests
 ## Author: m4xc4v413r4
-## Version: v0.9
+## Version: @project-version@
 ## SavedVariables: m4xEventReminderDB
 
 m4x-EventReminder.lua

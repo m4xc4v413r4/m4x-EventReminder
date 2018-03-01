@@ -1,2 +1,2 @@
-## v1.0 - 2018-xx-xx
+## v1.0 - 2018-03-01
 - Initial Release
