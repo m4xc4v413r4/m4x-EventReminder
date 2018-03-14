@@ -13,6 +13,7 @@ local function AnimateFrame(type)
 	warnframe.ag.a2 = warnframe.ag:CreateAnimation("Alpha")
 	warnframe.ag.a2:SetDuration(0.8)
 	if type == "in" then
+		warnframe:Show()
 		warnframe.ag.a1:SetOffset(50,0)
 		warnframe.ag.a1:SetSmoothing("OUT")
 		warnframe.ag.a2:SetFromAlpha(0)
@@ -31,6 +32,7 @@ local function AnimateFrame(type)
 		warnframe.ag:SetScript("OnFinished",function(self)
 			warnframe:SetPoint("LEFT", 0, 10)
 			warnframe:SetAlpha(0)
+			warnframe:Hide()
 		end)
 	end
 	warnframe.ag:Play()
@@ -47,6 +49,7 @@ local function MakeWarnFrame(eventI)
 	warnframe:SetFrameStrata("DIALOG")
 	warnframe:SetPoint("LEFT", 0, 10)
 	warnframe:SetAlpha(0)
+	warnframe:Hide()
 
 	if EncounterJournalSuggestFrame["Suggestion" .. eventI].reward.data and m4xEventReminderDB["OptBtn-Reward1-Enabled"] then
 		warnframe.reward.data = EncounterJournalSuggestFrame["Suggestion" .. eventI].reward.data
